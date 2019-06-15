@@ -19,3 +19,11 @@ AWS_S3_KEY_PREFIX=""
 AWS_S3_STORAGE_CLASS=STANDARD
 WATCH_INTERVAL=100
 ```
+
+## Docker
+
+Build Docker image by running the following from the repository root.
+
+```bash
+docker build -t willdady/go-watch-s3:latest .
+```
