@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 	"log"
 	"os"
@@ -43,6 +42,8 @@ func upload(uploader *s3manager.Uploader, path string, bucketName string, key st
 		return
 	}
 	log.Printf("Successfully uploaded %v\n", result.Location)
+
+	// TODO: Add option to delete file after successful upload
 }
 
 func main() {
@@ -55,7 +56,7 @@ func main() {
 	storageClass := utils.GetEnv("AWS_S3_STORAGE_CLASS", "STANDARD")
 	watchInterval, err := utils.GetEnvAsInt("WATCH_INTERVAL", 100)
 	if err != nil {
-		panic(fmt.Sprintf("Unable to parse WATCH_INTERVAL as integer"))
+		log.Panicln("Unable to parse WATCH_INTERVAL as integer")
 	}
 	// Instantiate uploader
 	sess := session.Must(session.NewSession())
@@ -63,6 +64,8 @@ func main() {
 	// Instantiate watcher
 	w := watcher.New()
 	w.FilterOps(watcher.Create)
+
+	// TODO: Add regex filtering
 
 	go func() {
 		for {
