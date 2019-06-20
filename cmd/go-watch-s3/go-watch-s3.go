@@ -6,6 +6,7 @@ import (
 	"os"
 	"io"
 	"strings"
+	"regexp"
 	"github.com/willdady/go-watch-s3/internal/utils"
 	"github.com/radovskyb/watcher"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -42,8 +43,6 @@ func upload(uploader *s3manager.Uploader, path string, bucketName string, key st
 		return
 	}
 	log.Printf("Successfully uploaded %v\n", result.Location)
-
-	// TODO: Add option to delete file after successful upload
 }
 
 func main() {
@@ -58,14 +57,19 @@ func main() {
 	if err != nil {
 		log.Panicln("Unable to parse WATCH_INTERVAL as integer")
 	}
+	pathPattern := utils.GetEnv("PATH_PATTERN", "")
 	// Instantiate uploader
 	sess := session.Must(session.NewSession())
 	uploader := s3manager.NewUploader(sess)
 	// Instantiate watcher
 	w := watcher.New()
 	w.FilterOps(watcher.Create)
-
-	// TODO: Add regex filtering
+	// Only files that match the regular expression during file listings
+	// will be watched.
+	if pathPattern != "" {
+		r := regexp.MustCompile(pathPattern)
+		w.AddFilterHook(watcher.RegexFilterHook(r, false))
+	}
 
 	go func() {
 		for {

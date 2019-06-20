@@ -30,6 +30,10 @@ S3 storage class used for storing objects. Can be **STANDARD**, **STANDARD_IA** 
 
 Duration in milliseconds specifying how often the watch directory should be polled for new files. Defaults to 500.
 
+**PATH_PATTERN** (_Optional_)
+
+A regular expression used to filter paths. For example "mp4$" would only upload files ending with "mp4". Defaults to an empty string.
+
 ## Docker
 
 Build Docker image by running the following from the repository root.
